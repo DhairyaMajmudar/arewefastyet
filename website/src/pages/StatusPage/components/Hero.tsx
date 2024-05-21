@@ -15,6 +15,7 @@ limitations under the License.
 */
 import React from "react";
 import useApiCall from "../../../utils/Hook";
+import { statusDataTypes } from "@/types";
 
 const info = [
   { title: "Total Benchmarks", content: "Total" },
@@ -23,8 +24,9 @@ const info = [
 ];
 
 export default function Hero() {
-  const { data: dataStatusStats } = useApiCall(
-    `${import.meta.env.VITE_API_URL}status/stats`,
+
+  const { data: dataStatusStats } = useApiCall<statusDataTypes>(
+    `${import.meta.env.VITE_API_URL}status/stats`
   );
 
   return (
