@@ -17,7 +17,7 @@ limitations under the License.
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import RingLoader from "react-spinners/RingLoader";
-import { MacrosData } from '@/types'
+import { MacrosData } from "@/types";
 import { errorApi } from "../../utils/Utils";
 import Hero from "./components/Hero";
 import FK from "./components/FK";

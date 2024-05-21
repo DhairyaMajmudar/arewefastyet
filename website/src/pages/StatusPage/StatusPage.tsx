@@ -44,7 +44,6 @@ interface dataTypes {
   status: string;
 }
 
-
 export default function StatusPage() {
   const {
     data: dataQueue,

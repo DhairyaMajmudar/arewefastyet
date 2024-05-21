@@ -32,7 +32,7 @@ export default function SearchPage() {
     isLoading: isSearchLoading,
     error: searchError,
   } = useApiCall<SearchData>(
-    `${import.meta.env.VITE_API_URL}search?sha=${gitRef}`
+    `${import.meta.env.VITE_API_URL}search?sha=${gitRef}`,
   );
 
   const navigate = useNavigate();
@@ -58,7 +58,6 @@ export default function SearchPage() {
       {!isSearchLoading && dataSearch && dataSearch.length > 0 && (
         <section className="flex flex-col items-center p-page">
           <div className="w-1/2 flex flex-col gap-y-16">
-
             {dataSearch.map((searchData, index) => (
               <div key={index}>
                 {searchData.Macros &&
@@ -71,7 +70,7 @@ export default function SearchPage() {
                         macroData={macroData}
                         gitRef={gitRef}
                       />
-                    )
+                    ),
                   )}
               </div>
             ))}

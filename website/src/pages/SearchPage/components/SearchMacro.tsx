@@ -28,7 +28,11 @@ interface SearchMacroProps {
   gitRef: string;
 }
 
-export default function SearchMacro({ macroName, macroData, gitRef }: SearchMacroProps) {
+export default function SearchMacro({
+  macroName,
+  macroData,
+  gitRef,
+}: SearchMacroProps) {
   return (
     <div className="flex flex-col border border-primary relative rounded-xl bg-background bg-opacity-5 shadow-xl">
       <div className="p-5">
@@ -43,41 +47,19 @@ export default function SearchMacro({ macroName, macroData, gitRef }: SearchMacr
       </div>
       <table>
         <tbody>
+          <Row title={"QPS Total"} value={macroData.total_qps} />
 
-          <Row
-            title={"QPS Total"}
-            value={macroData.total_qps}
-          />
+          <Row title={"QPS Reads"} value={macroData.reads_qps} />
 
-          <Row
-            title={"QPS Reads"}
-            value={macroData.reads_qps}
-          />
+          <Row title={"QPS Writes"} value={macroData.writes_qps} />
 
-          <Row
-            title={"QPS Writes"}
-            value={macroData.writes_qps}
-          />
+          <Row title={"QPS Other"} value={macroData.other_qps} />
 
-          <Row
-            title={"QPS Other"}
-            value={macroData.other_qps}
-          />
+          <Row title={"TPS"} value={macroData.tps} />
 
-          <Row
-            title={"TPS"}
-            value={macroData.tps}
-          />
+          <Row title={"Latency"} value={macroData.latency} />
 
-          <Row
-            title={"Latency"}
-            value={macroData.latency}
-          />
-
-          <Row
-            title={"Errors"}
-            value={macroData.errors}
-          />
+          <Row title={"Errors"} value={macroData.errors} />
 
           <Row
             title={"Total CPU / query"}
@@ -121,12 +103,12 @@ export default function SearchMacro({ macroName, macroData, gitRef }: SearchMacr
 }
 
 function Row({ title, value, fmt }) {
-    var valFmt = value.center
-    if (fmt == "time") {
-        valFmt = secondToMicrosecond(value.center)
-    } else if (fmt == "memory") {
-        valFmt = formatByte(value.center)
-    }
+  var valFmt = value.center;
+  if (fmt == "time") {
+    valFmt = secondToMicrosecond(value.center);
+  } else if (fmt == "memory") {
+    valFmt = formatByte(value.center);
+  }
 
   return (
     <tr className="border-t border-front border-opacity-70 duration-150 hover:bg-accent">
