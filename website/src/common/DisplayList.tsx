@@ -85,5 +85,5 @@ const DisplayList: React.FC<DisplayListProps> = (props) => {
       </div>
     </div>
   );
-}
- export default DisplayList;
+};
+export default DisplayList;

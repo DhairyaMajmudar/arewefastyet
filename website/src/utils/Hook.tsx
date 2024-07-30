@@ -18,7 +18,11 @@ import { useEffect, useState } from "react";
 
 import { errorApi } from "./Utils";
 
-export default function useApiCall<T,>(url: string) : { data: T | null, isLoading: boolean, error: string | null } {
+export default function useApiCall<T>(url: string): {
+  data: T | null;
+  isLoading: boolean;
+  error: string | null;
+} {
   const [data, setData] = useState<T | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -42,4 +46,4 @@ export default function useApiCall<T,>(url: string) : { data: T | null, isLoadin
   }, [url]);
 
   return { data, isLoading, error };
-};
+}

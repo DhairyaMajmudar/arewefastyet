@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 import { fixed, formatByte, secondToMicrosecond } from "../utils/Utils";

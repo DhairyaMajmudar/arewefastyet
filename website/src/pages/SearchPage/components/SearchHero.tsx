@@ -20,7 +20,7 @@ interface SearchHeroProps {
 }
 
 const searchHeroProps: HeroProps = {
-  title: "Search"
+  title: "Search",
 };
 
 export default function SearchHero({ setGitRef }: SearchHeroProps) {

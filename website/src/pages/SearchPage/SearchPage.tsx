@@ -32,7 +32,7 @@ export default function SearchPage() {
     isLoading: isSearchLoading,
     error: searchError,
   } = useApiCall<SearchData[]>(
-    `${import.meta.env.VITE_API_URL}search?sha=${gitRef}`
+    `${import.meta.env.VITE_API_URL}search?sha=${gitRef}`,
   );
 
   const navigate = useNavigate();

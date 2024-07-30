@@ -30,22 +30,14 @@ export type statusDataTypes = {
   status: string;
 };
 
-<<<<<<< HEAD
-export type prDataTypes = {
-=======
 export type PrData = {
->>>>>>> main
   ID: number;
   Author: string;
   Title: string;
   CreatedAt: string;
   Base: string;
   Head: string;
-<<<<<<< HEAD
-  error?: any;
-=======
   error?: string;
->>>>>>> main
 };
 
 export interface Range {
@@ -125,8 +117,6 @@ export interface CompareData {
   workload: string;
   result: CompareResult;
 }
-<<<<<<< HEAD
-=======
 
 export type DailySummarydata = {
   name: string;
@@ -185,4 +175,3 @@ export type MacroBenchmarkTableData = {
   vtgateMemStatsAllocBytes: MacroBenchmarkTableDataRow;
   vttabletMemStatsAllocBytes: MacroBenchmarkTableDataRow;
 };
->>>>>>> main

@@ -98,7 +98,7 @@ export default function PRPage() {
                       <p>
                         {format(
                           prData?.CreatedAt,
-                          "MMM d, yyyy, h:mm a 'GMT'XXX"
+                          "MMM d, yyyy, h:mm a 'GMT'XXX",
                         )}
                       </p>
                     </TooltipContent>
@@ -114,7 +114,9 @@ export default function PRPage() {
                     target="_blank"
                     to={`https://github.com/vitessio/vitess/commit/${prData?.Base}`}
                   >
-                    <p className="text-xs md:text-lg text-primary">{prData?.Base}</p>
+                    <p className="text-xs md:text-lg text-primary">
+                      {prData?.Base}
+                    </p>
                   </Link>
                   <Separator />
                   <Label className="md:text-xl font-semibold">Head</Label>
@@ -122,7 +124,9 @@ export default function PRPage() {
                     target="_blank"
                     to={`https://github.com/vitessio/vitess/commit/${prData?.Head}`}
                   >
-                    <p className="text-xs md:text-lg text-primary">{prData?.Head}</p>
+                    <p className="text-xs md:text-lg text-primary">
+                      {prData?.Head}
+                    </p>
                   </Link>{" "}
                 </div>
               </div>

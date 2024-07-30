@@ -47,7 +47,7 @@ export default function Compare() {
   } = useApiCall<CompareData[]>(
     `${import.meta.env.VITE_API_URL}macrobench/compare?new=${gitRef.new}&old=${
       gitRef.old
-    }`
+    }`,
   );
 
   let formattedData: MacroBenchmarkTableData[] = [];

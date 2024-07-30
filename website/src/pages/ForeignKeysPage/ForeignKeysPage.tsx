@@ -52,7 +52,7 @@ export default function ForeignKeys() {
   });
 
   const { data: vitessRefs } = useApiCall<VitessRefs>(
-    `${import.meta.env.VITE_API_URL}vitess/refs`
+    `${import.meta.env.VITE_API_URL}vitess/refs`,
   );
 
   const {
@@ -62,7 +62,7 @@ export default function ForeignKeys() {
   } = useApiCall<CompareResult>(
     `${import.meta.env.VITE_API_URL}fk/compare?sha=${gitRef}&newWorkload=${
       workload.new
-    }&oldWorkload=${workload.old}`
+    }&oldWorkload=${workload.old}`,
   );
 
   let formattedData = data !== null ? formatCompareResult(data) : null;
@@ -71,7 +71,7 @@ export default function ForeignKeys() {
 
   useEffect(() => {
     navigate(
-      `?tag=${gitRef}&oldWorkload=${workload.old}&newWorkload=${workload.new}`
+      `?tag=${gitRef}&oldWorkload=${workload.old}&newWorkload=${workload.new}`,
     );
   }, [gitRef, workload.old, workload.new]);
 
@@ -116,12 +116,16 @@ export default function ForeignKeys() {
                 <Card className="border-border">
                   <CardHeader className="flex flex-col gap-4 md:gap-0 md:flex-row justify-between pt-6">
                     <CardTitle className="text-2xl md:text-4xl text-primary">
-                      {gitRef == "" ? "N/A" : <Link
+                      {gitRef == "" ? (
+                        "N/A"
+                      ) : (
+                        <Link
                           to={`https://github.com/vitessio/vitess/commit/${gitRef}`}
                           target="__blank"
-                      >
-                        {formatTitle(gitRef, vitessRefs)}
-                      </Link>}
+                        >
+                          {formatTitle(gitRef, vitessRefs)}
+                        </Link>
+                      )}
                     </CardTitle>
                     <Button
                       variant="outline"

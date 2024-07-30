@@ -112,7 +112,7 @@ export function formatGitRef(gitRef: string): string {
 }
 
 export function formatCompareData(
-  data: CompareData[]
+  data: CompareData[],
 ): MacroBenchmarkTableData[] {
   return (
     data.map((data: CompareData) => {
@@ -230,7 +230,7 @@ export function formatCompareData(
 }
 
 export function formatCompareResult(
-  data: CompareResult
+  data: CompareResult,
 ): MacroBenchmarkTableData {
   return {
     qpsTotal: {
@@ -319,8 +319,7 @@ export function formatCompareResult(
       new: data.total_components_mem_stats_alloc_bytes.new,
       p: data.total_components_mem_stats_alloc_bytes.p,
       delta: data.total_components_mem_stats_alloc_bytes.delta,
-      insignificant:
-        data.total_components_mem_stats_alloc_bytes.insignificant,
+      insignificant: data.total_components_mem_stats_alloc_bytes.insignificant,
     },
     vtgateMemStatsAllocBytes: {
       title: "vtgate",
@@ -328,8 +327,7 @@ export function formatCompareResult(
       new: data.components_mem_stats_alloc_bytes.vtgate.new,
       p: data.components_mem_stats_alloc_bytes.vtgate.p,
       delta: data.components_mem_stats_alloc_bytes.vtgate.delta,
-      insignificant:
-        data.components_mem_stats_alloc_bytes.vtgate.insignificant,
+      insignificant: data.components_mem_stats_alloc_bytes.vtgate.insignificant,
     },
     vttabletMemStatsAllocBytes: {
       title: "vttablet",
