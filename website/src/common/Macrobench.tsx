@@ -14,11 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React from "react";
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 import { Link } from "react-router-dom";
-import { formatByte, fixed, secondToMicrosecond } from "../utils/Utils";
 import { twMerge } from "tailwind-merge";
+import { fixed, formatByte, secondToMicrosecond } from "../utils/Utils";
 
 export default function Macrobench({ data, gitRef, commits }) {
   return (
@@ -29,7 +28,7 @@ export default function Macrobench({ data, gitRef, commits }) {
           Click
           <Link
             className="text-primary"
-            to={`/macrobench/queries/compare?ltag=${commits.old}&rtag=${commits.new}&type=${data.type}`}
+            to={`/macrobench/queries/compare?ltag=${commits.old}&rtag=${commits.new}&workload=${data.type}`}
           >
             here
           </Link>

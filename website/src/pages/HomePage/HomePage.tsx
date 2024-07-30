@@ -14,20 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React from "react";
-
-import Hero from "./components/Hero";
+import HomePageHero from "./components/HomePageHero";
 import HowItWorks from "./components/HowItWorks";
+import { Separator } from "@/components/ui/separator"
 import Diagram from "./components/Diagram";
-import HeroMobile from "./components/HeroMobile";
-
 export default function HomePage() {
   return (
     <>
-      <Hero />
-      <HeroMobile />
+      <HomePageHero />
+      <Separator className="mx-auto w-[80%] foreground" />
       <HowItWorks />
-      {/*<MicroAndMacro />*/}
+      <Separator className="mx-auto w-[80%]" />
       <Diagram />
     </>
   );

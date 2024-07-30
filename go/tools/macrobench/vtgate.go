@@ -33,39 +33,40 @@ import (
 )
 
 type VTGateQueryPlanValue struct {
-	QueryType    string
-	Original     string
-	Instructions interface{}
+	QueryType    string      `json:"query_type"`
+	Original     string      `json:"original"`
+	Instructions interface{} `json:"instructions"`
 
-	ExecCount    int // Count of times this plan was executed
-	ExecTime     int // Average execution time per query
-	ShardQueries int // Total number of shard queries
-	RowsReturned int // Total number of rows
-	RowsAffected int // Total number of rows
-	Errors       int // Total number of errors
+	ExecCount    int `json:"exec_count"`    // Count of times this plan was executed
+	ExecTime     int `json:"exec_time"`     // Average execution time per query
+	ShardQueries int `json:"shard_queries"` // Total number of shard queries
+	RowsReturned int `json:"rows_returned"` // Total number of rows
+	RowsAffected int `json:"rows_affected"` // Total number of rows
+	Errors       int `json:"errors"`        // Total number of errors
 
-	TablesUsed interface{}
+	TablesUsed interface{} `json:"tables_used"`
 }
 
 type VTGateQueryPlan struct {
-	Key   string
-	Value VTGateQueryPlanValue
+	Key   string               `json:"key"`
+	Value VTGateQueryPlanValue `json:"value"`
 }
 
 type VTGateQueryPlanComparer struct {
-	Left, Right      *VTGateQueryPlan
-	SamePlan         bool
-	Key              string
-	ExecCountDiff    int
-	ExecTimeDiff     int
-	RowsReturnedDiff int
-	ErrorsDiff       int
+	Left             *VTGateQueryPlan `json:"left"`
+	Right            *VTGateQueryPlan `json:"right"`
+	SamePlan         bool             `json:"same_plan"`
+	Key              string           `json:"key"`
+	ExecCountDiff    int              `json:"exec_count_diff"`
+	ExecTimeDiff     int              `json:"exec_time_diff"`
+	RowsReturnedDiff int              `json:"rows_returned_diff"`
+	ErrorsDiff       int              `json:"errors_diff"`
 }
 
 type VTGateQueryPlanMap map[string]VTGateQueryPlanValue
 
 func CompareVTGateQueryPlans(left, right []VTGateQueryPlan) []VTGateQueryPlanComparer {
-	res := []VTGateQueryPlanComparer{}
+	var res []VTGateQueryPlanComparer
 	for i, plan := range left {
 		newCompare := VTGateQueryPlanComparer{
 			Key:  plan.Key,
@@ -214,7 +215,7 @@ func getVTGatesQueryPlans(ports []string) (VTGateQueryPlanMap, error) {
 	return res, nil
 }
 
-func GetVTGateSelectQueryPlansWithFilter(gitRef string, macroType Type, planner PlannerVersion, client storage.SQLClient) ([]VTGateQueryPlan, error) {
+func GetVTGateSelectQueryPlansWithFilter(gitRef string, workload Workload, planner PlannerVersion, client storage.SQLClient) ([]VTGateQueryPlan, error) {
 	query := "select " +
 		"qp.`key` as `key`, " +
 		"qp.plan as plan, " +
@@ -228,7 +229,7 @@ func GetVTGateSelectQueryPlansWithFilter(gitRef string, macroType Type, planner 
 		"qp.macrobenchmark_id = ma.macrobenchmark_id " +
 		"and ex.uuid = qp.exec_uuid " +
 		"and ex.uuid = ma.exec_uuid " +
-		"and ex.type = ? " +
+		"and ex.workload = ? " +
 		"and ma.commit = ? " +
 		"and ma.vtgate_planner_version = ? " +
 		"group by " +
@@ -236,12 +237,16 @@ func GetVTGateSelectQueryPlansWithFilter(gitRef string, macroType Type, planner 
 		"order by qp.`key` " +
 		"limit 1500;"
 
-	result, err := client.Select(query, macroType.String(), gitRef, string(planner))
+	result, err := client.Read(query, workload.String(), gitRef, string(planner))
 	if err != nil {
 		return nil, err
 	}
 	defer result.Close()
 
+	parser, err := sqlparser.New(sqlparser.Options{})
+	if err != nil {
+		return nil, err
+	}
 	res := []VTGateQueryPlan{}
 	for result.Next() {
 		var plan VTGateQueryPlan
@@ -257,7 +262,7 @@ func GetVTGateSelectQueryPlansWithFilter(gitRef string, macroType Type, planner 
 		// Remove all comments from the query
 		// This prevents the query from not match across two versions
 		// of Vitess where we changed query hints and added comments
-		stmt, err := sqlparser.Parse(plan.Key)
+		stmt, err := parser.Parse(plan.Key)
 		if err != nil {
 			return nil, err
 		}
@@ -280,7 +285,7 @@ func insertVTGateQueryMapToMySQL(client storage.SQLClient, execUUID string, resu
 	query := "INSERT INTO query_plans(`exec_uuid`, `macrobenchmark_id`, `key`, `plan`, `exec_count`, `exec_time`, `rows`, `errors`) VALUES(?, ?, ?, ?, ?, ?, ?, ?)"
 	for key, value := range result {
 		normalizeVTGateQueryPlan(&value)
-		_, err := client.Insert(query, execUUID, macrobenchmarkID, key, fmt.Sprintf("%v", value.Instructions), value.ExecCount, value.ExecTime, value.RowsReturned, value.Errors)
+		_, err := client.Write(query, execUUID, macrobenchmarkID, key, fmt.Sprintf("%v", value.Instructions), value.ExecCount, value.ExecTime, value.RowsReturned, value.Errors)
 		if err != nil {
 			return err
 		}

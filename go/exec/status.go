@@ -30,17 +30,20 @@ const (
 )
 
 type BenchmarkStats struct {
-	Total      int
-	Finished   int
-	Last30Days int
+	Total       int
+	Last30Days  int
+	Commits     int
+	AvgDuration float64
+	Last7Days   []int
 }
 
 func GetBenchmarkStats(client storage.SQLClient) (BenchmarkStats, error) {
-	rows, err := client.Select(`SELECT 
+	rows, err := client.Read(`SELECT
 			(SELECT COUNT(uuid) FROM execution) AS count_status,
-			(SELECT COUNT(*) FROM execution WHERE status = 'finished') AS count_finished,
-			(SELECT COUNT(*) FROM execution WHERE started_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)) AS count_all
-		FROM
+			(SELECT COUNT(DISTINCT git_ref) FROM execution) AS count_commits,
+			(SELECT COUNT(*) FROM execution WHERE started_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)) AS count_all,
+			(SELECT AVG(TIMESTAMPDIFF(MINUTE, started_at, finished_at)) AS avg_duration_minutes FROM execution WHERE started_at IS NOT NULL AND finished_at IS NOT NULL AND status NOT IN ('failed', 'started') ORDER BY avg_duration_minutes ASC) AS avg_duration_minutes
+		FROM 
 			execution
 		LIMIT 1;`)
 
@@ -52,10 +55,38 @@ func GetBenchmarkStats(client storage.SQLClient) (BenchmarkStats, error) {
 
 	var res BenchmarkStats
 	if rows.Next() {
-		err := rows.Scan(&res.Total, &res.Finished, &res.Last30Days)
+		err := rows.Scan(&res.Total, &res.Commits, &res.Last30Days, &res.AvgDuration)
 		if err != nil {
 			return BenchmarkStats{}, err
 		}
 	}
+
+	rows.Close()
+
+	rows, err = client.Read(`SELECT 
+			COUNT(*)
+		FROM
+			execution
+		WHERE
+			started_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) 
+		GROUP BY
+			DATE_FORMAT(started_at, '%Y%m%d')
+		ORDER BY
+			DATE_FORMAT(started_at, '%Y%m%d') ASC
+		LIMIT 7;`)
+
+	if err != nil {
+		return BenchmarkStats{}, err
+	}
+
+	for rows.Next() {
+		var count int
+		err := rows.Scan(&count)
+		if err != nil {
+			return BenchmarkStats{}, err
+		}
+		res.Last7Days = append(res.Last7Days, count)
+	}
+
 	return res, nil
 }

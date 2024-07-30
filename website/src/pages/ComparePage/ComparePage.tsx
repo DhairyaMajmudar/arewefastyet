@@ -14,13 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import RingLoader from "react-spinners/RingLoader";
-import useApiCall from "../../utils/Hook";
-import Hero from "./components/Hero";
-import Macrobench from "../../common/Macrobench";
-import { CompareData } from "@/types";
+import MacroBenchmarkTable from "@/common/MacroBenchmarkTable";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { CompareData, MacroBenchmarkTableData } from "@/types";
+import useApiCall from "@/utils/Hook";
+import { formatCompareData } from "@/utils/Utils";
+import { PlusCircledIcon } from "@radix-ui/react-icons";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import CompareHero from "./components/CompareHero";
 
 export default function Compare() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -30,64 +34,84 @@ export default function Compare() {
     new: urlParams.get("new") || "",
   });
 
-  const {
-    data: compareData,
-    isLoading: isMacrobenchLoading,
-    textLoading: macrobenchTextLoading,
-    error: macrobenchError,
-  } = useApiCall<CompareData>(
-    `${import.meta.env.VITE_API_URL}macrobench/compare?new=${gitRef.new}&old=${
-      gitRef.old
-    }`,
-  );
-
   const navigate = useNavigate();
 
   useEffect(() => {
     navigate(`?old=${gitRef.old}&new=${gitRef.new}`);
   }, [gitRef.old, gitRef.new]);
 
+  const {
+    data: data,
+    isLoading: isMacrobenchLoading,
+    error: macrobenchError,
+  } = useApiCall<CompareData[]>(
+    `${import.meta.env.VITE_API_URL}macrobench/compare?new=${gitRef.new}&old=${
+      gitRef.old
+    }`
+  );
+
+  let formattedData: MacroBenchmarkTableData[] = [];
+
+  if (data !== null && data.length > 0) {
+    formattedData = formatCompareData(data);
+  }
+
   return (
     <>
-      <Hero gitRef={gitRef} setGitRef={setGitRef} />
+      <CompareHero gitRef={gitRef} setGitRef={setGitRef} />
       {macrobenchError && (
         <div className="text-red-500 text-center my-2">{macrobenchError}</div>
       )}
 
-      {(isMacrobenchLoading || macrobenchTextLoading) && (
-        <div className="flex justify-center items-center">
-          <RingLoader
-            loading={isMacrobenchLoading || macrobenchTextLoading}
-            color="#E77002"
-            size={300}
-          />
-        </div>
-      )}
-
-      {!isMacrobenchLoading &&
-        !macrobenchTextLoading &&
-        compareData &&
-        compareData.length > 0 && (
-          <section className="flex flex-col items-center">
-            <h3 className="my-6 text-primary text-2xl">Macro Benchmarks</h3>
-            <div className="flex flex-col gap-y-20">
-              {compareData.map((macro, index) => {
-                return (
-                  <div key={index}>
-                    <Macrobench
-                      data={macro}
-                      gitRef={{
-                        old: gitRef.old.slice(0, 8),
-                        new: gitRef.new.slice(0, 8),
-                      }}
-                      commits={{ old: gitRef.old, new: gitRef.new }}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          </section>
+      <section className="flex flex-col items-center">
+        {isMacrobenchLoading && (
+          <>
+            {[...Array(8)].map((_, index) => {
+              return (
+                <div key={index} className="w-[80vw] xl:w-[60vw] my-12">
+                  <Skeleton className="h-[852px]"></Skeleton>
+                </div>
+              );
+            })}
+          </>
         )}
+        {!isMacrobenchLoading && data !== null && data.length > 0 && (
+          <>
+            {data.map((macro, index) => {
+              return (
+                <div className="w-[80vw] xl:w-[60vw] my-12" key={index}>
+                  <Card className="border-border">
+                    <CardHeader className="flex flex-col gap-4 md:gap-0 md:flex-row justify-between pt-6">
+                      <CardTitle className="text-2xl md:text-4xl">
+                        {macro.workload}
+                      </CardTitle>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 w-fit border-dashed mt-4 md:mt-0"
+                      >
+                        <PlusCircledIcon className="mr-2 h-4 w-4 text-primary" />
+                        <Link
+                          to={`/macrobench/queries/compare?old=${gitRef.old}&new=${gitRef.new}&workload=${macro.workload}`}
+                        >
+                          See Query Plan{" "}
+                        </Link>
+                      </Button>
+                    </CardHeader>
+                    <CardContent className="w-full p-0">
+                      <MacroBenchmarkTable
+                        data={formattedData[index]}
+                        new={gitRef.new}
+                        old={gitRef.old}
+                      />
+                    </CardContent>
+                  </Card>
+                </div>
+              );
+            })}
+          </>
+        )}
+      </section>
     </>
   );
 }

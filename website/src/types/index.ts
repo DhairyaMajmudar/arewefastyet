@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import { ComponentType } from "react";
+
 export type Theme = "default" | "dark";
 
 export type statusDataTypes = {
@@ -22,20 +24,28 @@ export type statusDataTypes = {
   source: string;
   started_at: string;
   finished_at: string;
-  type_of: string;
+  workload: string;
   pull_nb?: number;
   golang_version: string;
   status: string;
 };
 
+<<<<<<< HEAD
 export type prDataTypes = {
+=======
+export type PrData = {
+>>>>>>> main
   ID: number;
   Author: string;
   Title: string;
   CreatedAt: string;
   Base: string;
   Head: string;
+<<<<<<< HEAD
   error?: any;
+=======
+  error?: string;
+>>>>>>> main
 };
 
 export interface Range {
@@ -100,9 +110,79 @@ export interface CompareResult {
   writes_qps: ComparedValue;
   other_qps: ComparedValue;
   tps: ComparedValue;
+  latency: ComparedValue;
+  errors: ComparedValue;
+  total_components_cpu_time: ComparedValue;
+  components_cpu_time: { vtgate: ComparedValue; vttablet: ComparedValue };
+  total_components_mem_stats_alloc_bytes: ComparedValue;
+  components_mem_stats_alloc_bytes: {
+    vtgate: ComparedValue;
+    vttablet: ComparedValue;
+  };
 }
 
 export interface CompareData {
-  type: string;
+  workload: string;
   result: CompareResult;
 }
+<<<<<<< HEAD
+=======
+
+export type DailySummarydata = {
+  name: string;
+  data: { total_qps: MacroDataValue }[];
+};
+
+export type FilterConfigs = {
+  column: string;
+  title: string;
+  options: {
+    label: string;
+    value: string;
+    icon?: ComponentType<{
+      className?: string;
+    }>;
+  }[];
+};
+
+export type VitessRefsData = {
+  name: string;
+  commit_hash: string;
+  version: {
+    major: number;
+    minor: number;
+    patch: number;
+  };
+  cnumber: number;
+};
+
+export type VitessRefs = {
+  tags: VitessRefsData[];
+  branches: VitessRefsData[];
+};
+
+type MacroBenchmarkTableDataRow = {
+  title: string;
+  old: MacroDataValue;
+  new: MacroDataValue;
+  p: number;
+  delta: number;
+  insignificant: boolean;
+};
+
+export type MacroBenchmarkTableData = {
+  qpsTotal: MacroBenchmarkTableDataRow;
+  qpsReads: MacroBenchmarkTableDataRow;
+  qpsWrites: MacroBenchmarkTableDataRow;
+  qpsOther: MacroBenchmarkTableDataRow;
+  tps: MacroBenchmarkTableDataRow;
+  latency: MacroBenchmarkTableDataRow;
+  errors: MacroBenchmarkTableDataRow;
+  totalComponentsCpuTime: MacroBenchmarkTableDataRow;
+  vtgateCpuTime: MacroBenchmarkTableDataRow;
+  vttabletCpuTime: MacroBenchmarkTableDataRow;
+  totalComponentsMemStatsAllocBytes: MacroBenchmarkTableDataRow;
+  vtgateMemStatsAllocBytes: MacroBenchmarkTableDataRow;
+  vttabletMemStatsAllocBytes: MacroBenchmarkTableDataRow;
+};
+>>>>>>> main

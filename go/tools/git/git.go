@@ -31,14 +31,16 @@ import (
 
 type (
 	Release struct {
-		Name       string
-		CommitHash string
-		Version    Version
-		RCnumber   int
+		Name       string  `json:"name"`
+		CommitHash string  `json:"commit_hash"`
+		Version    Version `json:"version"`
+		RCnumber   int     `json:"rc_number"`
 	}
 
 	Version struct {
-		Major, Minor, Patch int
+		Major int `json:"major"`
+		Minor int `json:"minor"`
+		Patch int `json:"patch"`
 	}
 )
 
@@ -138,9 +140,7 @@ func GetLatestVitessReleaseCommitHash(repoDir string) ([]*Release, error) {
 	}
 	var latestReleases []*Release
 
-	// We take the 2 latest major release
-	// TODO: @Florent: use the three latest major releases once v17 is out
-	minimumRelease := allReleases[0].Version.Major - 1
+	minimumRelease := allReleases[0].Version.Major - 2
 	for _, release := range allReleases {
 		if release.Version.Major >= minimumRelease {
 			latestReleases = append(latestReleases, release)
@@ -205,8 +205,7 @@ func GetLatestVitessReleaseBranchCommitHash(repoDir string) ([]*Release, error) 
 	}
 	var latestReleaseBranches []*Release
 	// We take the 2 latest major release
-	// TODO: @Florent: use the three latest major releases once v17 is out
-	minimumRelease := res[0].Version.Major - 1
+	minimumRelease := res[0].Version.Major - 2
 	for _, release := range res {
 		if release.Version.Major >= minimumRelease {
 			latestReleaseBranches = append(latestReleaseBranches, release)

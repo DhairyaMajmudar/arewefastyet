@@ -14,35 +14,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { errorApi } from "./Utils";
 
-const useApiCall = <T,>(
-  url: string,
-): {
-  data: T[];
-  isLoading: boolean;
-  error: string | null;
-  textLoading: boolean;
-} => {
-  const [data, setData] = useState<T[]>([]);
+export default function useApiCall<T,>(url: string) : { data: T | null, isLoading: boolean, error: string | null } {
+  const [data, setData] = useState<T | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [textLoading, setTextLoading] = useState(true);
 
   useEffect(() => {
-    setTextLoading(true);
+    setIsLoading(true);
     const fetchData = async () => {
       try {
         const response = await fetch(url);
         const jsonData = await response.json();
-        setTextLoading(false);
         setData(jsonData);
         setIsLoading(false);
       } catch (error) {
         console.log("Error while retrieving data from the API", error);
-        setTextLoading(false);
         setError(errorApi);
         setIsLoading(false);
       }
@@ -51,7 +41,5 @@ const useApiCall = <T,>(
     fetchData();
   }, [url]);
 
-  return { data, isLoading, error, textLoading };
+  return { data, isLoading, error };
 };
-
-export default useApiCall;

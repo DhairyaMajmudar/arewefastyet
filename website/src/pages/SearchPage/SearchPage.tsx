@@ -14,12 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import RingLoader from "react-spinners/RingLoader";
-import useApiCall from "../../utils/Hook";
+import useApiCall from "@/utils/Hook";
 
-import Hero from "./components/Hero";
+import SearchHero from "./components/SearchHero";
 import SearchMacro from "./components/SearchMacro";
 import { SearchData } from "@/types";
 
@@ -31,8 +31,8 @@ export default function SearchPage() {
     data: dataSearch,
     isLoading: isSearchLoading,
     error: searchError,
-  } = useApiCall<SearchData>(
-    `${import.meta.env.VITE_API_URL}search?sha=${gitRef}`,
+  } = useApiCall<SearchData[]>(
+    `${import.meta.env.VITE_API_URL}search?sha=${gitRef}`
   );
 
   const navigate = useNavigate();
@@ -43,7 +43,7 @@ export default function SearchPage() {
 
   return (
     <>
-      <Hero setGitRef={setGitRef} />
+      <SearchHero setGitRef={setGitRef} />
 
       {searchError && (
         <div className="text-red-500 text-center my-2">{searchError}</div>

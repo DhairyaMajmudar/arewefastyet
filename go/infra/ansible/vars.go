@@ -33,9 +33,8 @@ const (
 	// current benchmark.
 	KeyExecUUID = "arewefastyet_exec_uuid"
 
-	// KeyExecutionType corresponding value in the map is the type of execution for
-	// this benchmark.
-	KeyExecutionType = "arewefastyet_execution_type"
+	// KeyExecutionWorkload corresponding value in the map is the workload we will execute.
+	KeyExecutionWorkload = "arewefastyet_execution_workload"
 
 	// KeyBenchmarkConfigPath corresponding value in the map is the path to the configuration
 	// file that will be used to execute the benchmark by arewefastyet inside the benchmarking
@@ -70,10 +69,9 @@ const (
 	// number that the execution will benchmark.
 	KeyVitessVersionPRNumber = "vitess_git_version_pr_nb"
 
-	// KeyVitessVersionName corresponding value in the map is the name of the vitess
-	// version on which the benchmarks will be executed. For instance: 'latest', '14',
-	// '13', ...
-	KeyVitessVersionName = "vitess_version_name"
+	// KeyVitessMajorVersion corresponding value in the map is an int set to the major
+	// release increment of Vitess.
+	KeyVitessMajorVersion = "vitess_major_version"
 
 	// KeyVtgatePlanner corresponding value in the map is the query planner version
 	// that will be used to execute the benchmark.
