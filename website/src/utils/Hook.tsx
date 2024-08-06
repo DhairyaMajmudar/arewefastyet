@@ -26,8 +26,11 @@ export default function useApiCall<T>(url: string): {
   const [data, setData] = useState<T | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
+    if (!url) {
+      setIsLoading(false);
+      return;
+    }
     setIsLoading(true);
     const fetchData = async () => {
       try {
